@@ -117,5 +117,5 @@ if __name__ == "__main__":
     print(f"concept_prompts")
     get_embeddings(concept_prompts)
 
-    print(f"concept_prompts")
+    print(f"property_prompts")
     get_embeddings(property_prompts)
