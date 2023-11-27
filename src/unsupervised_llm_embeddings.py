@@ -3,8 +3,12 @@ import pandas as pd
 import os
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
 
-# base_model_id_13b = "meta-llama/Llama-2-13b-chat-hf"
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
+print (f"Device: {device}")
+
+
+# base_model_id_13b = "meta-llama/Llama-2-13b-chat-hf"
 base_model_id_7b = "meta-llama/Llama-2-7b-chat-hf"
 data_dir = "data/mcrae/original"
 batch_size = 16
@@ -69,6 +73,8 @@ def get_embeddings(input_list):
                                             truncation=True, 
                                             padding=True, 
                                             max_length=32)
+        
+        inputs = {key:value.to(device) for key, value in inputs.items()}
         
         # print (idx, idx+batch_size)
         # print (concept_prompts[idx:idx+batch_size])
