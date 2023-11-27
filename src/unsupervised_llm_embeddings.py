@@ -7,6 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
 
 base_model_id_7b = "meta-llama/Llama-2-7b-chat-hf"
 data_dir = "data/mcrae/original"
+batch_size = 16
 
 
 model = AutoModelForCausalLM.from_pretrained(base_model_id_7b, output_hidden_states=True, return_dict=True, device_map='auto')
@@ -46,5 +47,47 @@ print (f"all_concepts: {len(all_concepts)}")
 print (f"all_properties: {len(all_properties)}")
 
 
+concept_prompt = f'The concept "<CONCEPT>" means in one word: "'
+concept_prompts = [concept_prompt.replace('<CONCEPT>', con) for con in all_concepts]
+
+print (f"concept_prompts: {concept_prompts[0:10]}")
+
+
+property_prompt = f'The property "<PROPERTY>" means in one word: "'
+property_prompts= [property_prompt.replace('<PROPERTY>', prop) for prop in all_properties]
+
+print (f"property_prompts: {property_prompts[0:10]}")
+
+
+
+def get_embeddings(input_list):
+
+    for i, idx in enumerate(range(0, len(input_list), batch_size)):
+
+        inputs = tokenizer.batch_encode_plus(batch_text_or_text_pairs=concept_prompts[idx:idx+batch_size], 
+                                            return_tensors='pt', 
+                                            truncation=True, 
+                                            padding=True, 
+                                            max_length=32)
+        
+        print (idx, idx+batch_size)
+        print (concept_prompts[idx:idx+batch_size])
+        print (inputs)
+
+        with torch.no_grad():
+            outputs = model(**inputs)
+
+        last_token_embedding = outputs.hidden_states[-1][:, -1, :]
+
+        print (f'i, last_token_embedding: {i}, {last_token_embedding.shape}')
+        print ()
+
+print (f"concept_prompts")
+get_embeddings(concept_prompts)
+
+
+
+print (f"concept_prompts")
+get_embeddings(property_prompts)
 
 
