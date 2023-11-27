@@ -1,0 +1,5 @@
+{
+    "experiment_name": "je_mcrae_cslb5neg_pretrain_deberta_v3_large_mask_id_ctx5_con_prop",
+    "log_dirctory": "je_pretrain",
+    "data_dir": "data/mcrae/original"
+}
