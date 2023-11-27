@@ -70,9 +70,9 @@ def get_embeddings(input_list):
                                             padding=True, 
                                             max_length=32)
         
-        print (idx, idx+batch_size)
-        print (concept_prompts[idx:idx+batch_size])
-        print (inputs)
+        # print (idx, idx+batch_size)
+        # print (concept_prompts[idx:idx+batch_size])
+        # print (inputs)
 
         with torch.no_grad():
             outputs = model(**inputs)
