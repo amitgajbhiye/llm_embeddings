@@ -39,10 +39,6 @@ def get_embeddings(input_list):
 
         inputs = {key: value.to(device) for key, value in inputs.items()}
 
-        # print (idx, idx+batch_size)
-        # print (concept_prompts[idx:idx+batch_size])
-        # print (inputs)
-
         with torch.no_grad():
             outputs = model(**inputs)
 

@@ -1,5 +1,6 @@
 {
-    "experiment_name": "je_mcrae_cslb5neg_pretrain_deberta_v3_large_mask_id_ctx5_con_prop",
-    "log_dirctory": "je_pretrain",
-    "data_dir": "data/mcrae/original"
+    "experiment_name": "llama2_7b_mcrae_concept_property_embeddings",
+    "log_dirctory": "mcrae_embeddings",
+    "data_dir": "data/mcrae/original",
+    "save_dir": "embeddings/mcrae"
 }
