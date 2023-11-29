@@ -63,7 +63,7 @@ def get_embeddings(input_list, prompt_id):
         print(f"i, batch_last_token_embedding: {i}, {batch_last_token_embedding.shape}")
 
         for con, embed in zip(input_list, batch_last_token_embedding):
-            # print(f"{con}: {embed.detach().cpu().numpy()}")
+            print(f"{con}: {embed.detach().cpu().numpy().shape}")
             embeddings[con] = embed.detach().cpu().numpy()
 
     print(f"{len(embeddings)}: len(embeddings)")
