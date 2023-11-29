@@ -33,22 +33,24 @@ tokenizer.pad_token = tokenizer.eos_token
 
 
 def get_embeddings(input_list, prompt_id):
-    concept_prompts = [
-        PROMPTS[prompt_id].replace("<CONCEPT>", con) for con in input_list
-    ]
-
-    print(f"len(input_list): {len(input_list)}")
-    print(f"len(concept_prompts): {len(concept_prompts)}")
-
     embeddings = dict()
+    print(f"len(input_list): {len(input_list)}")
 
     for i, idx in enumerate(range(0, len(concept_prompts), batch_size)):
-        print(flush=True)
         print(f"Processing batch {i} of {len(concept_prompts)//batch_size}", flush=True)
-        print(idx, idx + batch_size)
-        print(concept_prompts[idx : idx + batch_size])
+
+        batch = input_list[idx : idx + batch_size]
+
+        concept_prompts = [
+            PROMPTS[prompt_id].replace("<CONCEPT>", con) for con in batch
+        ]
+
+        print(f"len(concept_prompts): {len(concept_prompts)}")
+        print(concept_prompts)
+        print(flush=True)
+
         inputs = tokenizer.batch_encode_plus(
-            batch_text_or_text_pairs=concept_prompts[idx : idx + batch_size],
+            batch_text_or_text_pairs=concept_prompts,
             return_tensors="pt",
             truncation=True,
             padding=True,
@@ -64,7 +66,7 @@ def get_embeddings(input_list, prompt_id):
 
         print(f"i, batch_last_token_embedding: {i}, {batch_last_token_embedding.shape}")
 
-        for con, embed in zip(input_list, batch_last_token_embedding):
+        for con, embed in zip(batch, batch_last_token_embedding):
             print(f"{con}: {embed.detach().cpu().numpy().shape}")
             embeddings[con] = embed.detach().cpu().numpy()
 
