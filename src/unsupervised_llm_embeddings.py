@@ -57,7 +57,7 @@ def get_embeddings(input_list, prompt_id):
 
         batch_last_token_embedding = outputs.hidden_states[-1][:, -1, :]
 
-        print(f"i, last_token_embedding: {i}, {last_token_embedding.shape}")
+        print(f"i, last_token_embedding: {i}, {batch_last_token_embedding.shape}")
         print()
 
         for con, embed in zip(input_list, batch_last_token_embedding):
