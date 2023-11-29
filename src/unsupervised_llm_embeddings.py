@@ -45,6 +45,8 @@ def get_embeddings(input_list, prompt_id):
     for i, idx in enumerate(range(0, len(concept_prompts), batch_size)):
         print(flush=True)
         print(f"Processing batch {i} of {len(concept_prompts)//batch_size}", flush=True)
+        print(idx, idx + batch_size)
+        print(concept_prompts[idx : idx + batch_size])
         inputs = tokenizer.batch_encode_plus(
             batch_text_or_text_pairs=concept_prompts[idx : idx + batch_size],
             return_tensors="pt",
