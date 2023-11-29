@@ -36,8 +36,8 @@ def get_embeddings(input_list, prompt_id):
     embeddings = dict()
     print(f"len(input_list): {len(input_list)}")
 
-    for i, idx in enumerate(range(0, len(concept_prompts), batch_size)):
-        print(f"Processing batch {i} of {len(concept_prompts)//batch_size}", flush=True)
+    for i, idx in enumerate(range(0, len(input_list), batch_size)):
+        print(f"Processing batch {i} of {len(input_list) // batch_size}", flush=True)
 
         batch = input_list[idx : idx + batch_size]
 
