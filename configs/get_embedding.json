@@ -3,7 +3,7 @@
     "log_dirctory": "mcrae_embeddings",
     "data_dir": "data/mcrae/original",
     "train_file":"data/mcrae/original/train_mcrae.tsv",
-    "val_file":"",
+    "val_file": null,
     "test_file":"data/mcrae/original/test_mcrae.tsv",
     "save_dir": "embeddings/mcrae",
     "prompt_id":1
