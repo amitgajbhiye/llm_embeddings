@@ -43,7 +43,8 @@ def get_embeddings(input_list, prompt_id):
     embeddings = dict()
 
     for i, idx in enumerate(range(0, len(concept_prompts), batch_size)):
-        print(f"Processing batch {i} of {len(concept_prompts)//batch_size}")
+        print(flush=True)
+        print(f"Processing batch {i} of {len(concept_prompts)//batch_size}", flush=True)
         inputs = tokenizer.batch_encode_plus(
             batch_text_or_text_pairs=concept_prompts[idx : idx + batch_size],
             return_tensors="pt",
@@ -59,11 +60,13 @@ def get_embeddings(input_list, prompt_id):
 
         batch_last_token_embedding = outputs.hidden_states[-1][:, -1, :]
 
-        print(f"i, last_token_embedding: {i}, {batch_last_token_embedding.shape}")
+        print(f"i, batch_last_token_embedding: {i}, {batch_last_token_embedding.shape}")
 
         for con, embed in zip(input_list, batch_last_token_embedding):
-            print(f"{con}: {embed.detach().cpu().numpy()}")
+            # print(f"{con}: {embed.detach().cpu().numpy()}")
             embeddings[con] = embed.detach().cpu().numpy()
+
+    print(f"{len(embeddings)}: len(embeddings)")
 
     return embeddings
 
