@@ -115,7 +115,7 @@ def get_data(config):
 
     print(f"all_concepts: {all_concepts}")
 
-    return all_concepts
+    return list(all_concepts)
 
 
 if __name__ == "__main__":
