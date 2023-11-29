@@ -1,4 +1,5 @@
 import json
+import logging
 from sklearn.metrics import (
     accuracy_score,
     classification_report,

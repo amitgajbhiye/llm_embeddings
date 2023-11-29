@@ -37,7 +37,7 @@ def get_embeddings(input_list, prompt_id):
         PROMPTS[prompt_id].replace("<CONCEPT>", con) for con in input_list
     ]
 
-    logging.info(concept_prompts[0:15])
+    print(concept_prompts[0:15])
 
     embeddings = dict()
 
@@ -55,10 +55,15 @@ def get_embeddings(input_list, prompt_id):
         with torch.no_grad():
             outputs = model(**inputs)
 
-        last_token_embedding = outputs.hidden_states[-1][:, -1, :]
+        batch_last_token_embedding = outputs.hidden_states[-1][:, -1, :]
 
         print(f"i, last_token_embedding: {i}, {last_token_embedding.shape}")
         print()
+
+        for con, embed in zip(input_list, batch_last_token_embedding):
+            embeddings[con] = embed
+
+    return embeddings
 
 
 def get_data(config):
@@ -103,30 +108,6 @@ def get_data(config):
 
     return all_concepts
 
-    # # all_concepts = set(
-    # #     list(train_df["concept"].unique()) + list(test_df["concept"].unique())
-    # # )
-    # # all_properties = set(
-    # #     list(train_df["property"].unique()) + list(test_df["property"].unique())
-    # # )
-
-    # print(f"all_concepts: {len(all_concepts)}")
-    # # print(f"all_properties: {len(all_properties)}")
-
-    # concept_prompt = f'The concept "<CONCEPT>" means in one word: "'
-    # concept_prompts = [concept_prompt.replace("<CONCEPT>", con) for con in all_concepts]
-
-    # print(f"concept_prompts: {concept_prompts[0:10]}")
-
-    # property_prompt = f'The property "<PROPERTY>" means in one word: "'
-    # property_prompts = [
-    #     property_prompt.replace("<PROPERTY>", prop) for prop in all_properties
-    # ]
-
-    # print(f"property_prompts: {property_prompts[0:10]}")
-
-    # return concept_prompts, property_prompts
-
 
 if __name__ == "__main__":
     parser = ArgumentParser(description="Concept Property Embeddings from LLMs.")
@@ -151,6 +132,7 @@ if __name__ == "__main__":
     )
 
     concepts = get_data(config=config)
+    embeddings = get_embeddings(input_list=concepts, prompt_id=config["prompt_id"])
 
-    print(f"concept_prompts")
-    get_embeddings(input_list=concepts, prompt_id=config["prompt_id"])
+    print(f"len(embeddings): {len(embeddings)}")
+    print(embeddings)
