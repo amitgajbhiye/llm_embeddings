@@ -106,7 +106,7 @@ def get_data(config):
         logging.info(f"test_df: {test_df}")
         all_concepts.update(test_df["concept"].unique())
 
-    logging.info(f"all_concepts: {all_concepts}")
+    print(f"all_concepts: {all_concepts}")
 
     return all_concepts
 
