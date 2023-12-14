@@ -167,7 +167,7 @@ if __name__ == "__main__":
 
         print(f"****** Spliting the Property Data into Train/Val ******")
         train_split, val_split = train_test_split(
-            property_train_data, test_size=0.10, stratify=train_df["label"]
+            property_train_data, test_size=0.10, stratify=property_train_data["label"]
         )
         print(f"train_split: {train_split.shape}")
         print(f"val_split: {val_split.shape}")
