@@ -68,7 +68,7 @@ def get_data(config):
     def clean_text(text):
         return " ".join(text.replace("_", " ").split())
 
-    all_concepts = set()
+    all_concepts, all_properties = set(), set()
     if config.get("train_file") is not None:
         train_file = config["train_file"]
         train_df = pd.read_csv(
@@ -79,6 +79,7 @@ def get_data(config):
         logging.info(f"train_df: {train_df}")
 
         all_concepts.update(train_df["concept"].unique())
+        all_properties.update(train_df["property"].unique())
 
     if config.get("val_file") is not None:
         val_file = config["val_file"]
@@ -88,6 +89,7 @@ def get_data(config):
         logging.info(f"val_df: {val_df}")
 
         all_concepts.update(val_df["concept"].unique())
+        all_properties.update(val_df["property"].unique())
 
     if config.get("test_file") is not None:
         test_file = config["test_file"]
@@ -99,10 +101,11 @@ def get_data(config):
         logging.info(f"test_df: {test_df}")
 
         all_concepts.update(test_df["concept"].unique())
+        all_properties.update(test_df["property"].unique())
 
     print(f"all_concepts: {all_concepts}")
 
-    return list(all_concepts)
+    return list(all_concepts), list(all_properties)
 
 
 if __name__ == "__main__":
@@ -127,7 +130,7 @@ if __name__ == "__main__":
         format="%(asctime)s : %(name)s : %(levelname)s - %(message)s",
     )
 
-    concepts = get_data(config=config)
+    concepts, properties = get_data(config=config)
     embeddings = get_embeddings(input_list=concepts, prompt_id=config["prompt_id"])
 
     print(f"len(embeddings): {len(embeddings)}")
