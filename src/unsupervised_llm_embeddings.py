@@ -150,8 +150,11 @@ if __name__ == "__main__":
 
     print(f"Concepts: {len(concepts)}, {concepts}")
     print(f"Properties: {len(properties)}, {properties}")
+    res_all_prop = []
 
     for idx, prop in enumerate(properties):
+        print()
+        print(f"For property: ************ {prop} ************ ")
         print(
             f"Training Classifier for Property - {idx+1} / {len(properties)} - {prop}"
         )
@@ -159,7 +162,6 @@ if __name__ == "__main__":
         property_train_data = train_df[train_df["property"] == prop]
         property_test_data = test_df[test_df["property"] == prop]
 
-        print(f"For property: ************ {prop} ************ ")
         print(f"property_train_data: {len(property_train_data)}")
         print(
             f"property_train_data_label_ratio: {property_train_data['label'].value_counts()}"
@@ -203,9 +205,35 @@ if __name__ == "__main__":
 
         print(f"svm: {svm}", "th: {th}")
 
-        # print(f"property_test_data: {len(property_test_data)}")
-        # print(
-        #     f"property_test_data_label_ratio: {property_test_data['label'].value_counts()}"
-        # )
+        print(f"****** Testing the Model ****** ")
 
-        # print(f"len(embeddings): {len(embeddings)}")
+        test_con_embeddings = np.vstack(
+            [concept_embeddings[con] for con in test_df["concept"]]
+        )
+        test_labels = test_df["label"].values
+
+        rr = test_svc(test_con_embeddings, test_labels, svm, th)
+        print(
+            str(idx + 1)
+            + ", "
+            + prop
+            + ": map = "
+            + str(rr[0])
+            + ", f1 = "
+            + str(rr[-1])
+        )
+        res_all_prop.append(rr)
+
+    res_mean = np.mean(np.array(res_all_prop), axis=0)
+    print(args.dataset, res_mean[-1])
+    results_str = (
+        str(args)
+        + "\nLinear svm\n"
+        + ": map = "
+        + str(res_mean[0])
+        + ", f1 = "
+        + str(res_mean[-1])
+        + "\n\n\n"
+    )
+
+    print(f"Final result: {results_str}")
