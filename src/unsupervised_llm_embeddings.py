@@ -154,9 +154,9 @@ if __name__ == "__main__":
 
     for idx, prop in enumerate(properties):
         print()
-        print(f"For property: ************ {prop} ************ ")
+        # print(f"For property: ************ {prop} ************ ")
         print(
-            f"Training Classifier for Property - {idx+1} / {len(properties)} - {prop}"
+            f"************ Training Classifier for Property - {idx+1} / {len(properties)} - {prop} ************"
         )
 
         property_train_data = train_df[train_df["property"] == prop]
@@ -167,7 +167,7 @@ if __name__ == "__main__":
             f"property_train_data_label_ratio: {property_train_data['label'].value_counts()}"
         )
 
-        print(f"****** Spliting the Property Data into Train/Val ******")
+        print(f"Spliting the Property Data into Train/Val ... ")
         train_split, val_split = train_test_split(
             property_train_data, test_size=0.10, stratify=property_train_data["label"]
         )
@@ -190,8 +190,6 @@ if __name__ == "__main__":
         print(f"val_con_embeddings.shape: {val_con_embeddings.shape}")
         print(f"val_labels.shape: {val_labels.shape}")
 
-        print()
-
         pos_prop = property_train_data[property_train_data["label"] == 1]
 
         svm, th = train_svc(
@@ -203,9 +201,9 @@ if __name__ == "__main__":
             cv=min(3, len(pos_prop)),
         )
 
-        print(f"svm: {svm}", "th: {th}")
+        print(f"svm: {svm}, th: {th}")
 
-        print(f"****** Testing the Model ****** ")
+        print(f"Testing the Model ...")
 
         test_con_embeddings = np.vstack(
             [concept_embeddings[con] for con in test_df["concept"]]
@@ -225,7 +223,7 @@ if __name__ == "__main__":
         res_all_prop.append(rr)
 
     res_mean = np.mean(np.array(res_all_prop), axis=0)
-    print(args.dataset, res_mean[-1])
+
     results_str = (
         str(args)
         + "\nLinear svm\n"
@@ -236,4 +234,5 @@ if __name__ == "__main__":
         + "\n\n\n"
     )
 
+    print("Final F1: ", res_mean[-1])
     print(f"Final result: {results_str}")
