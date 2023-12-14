@@ -169,12 +169,12 @@ if __name__ == "__main__":
         train_con_embeddings = np.vstack(
             [concept_embeddings[con] for con in train_split["concept"]]
         )
-        train_labels = train_split["label"].values()
+        train_labels = train_split["label"].values
 
         val_con_embeddings = np.vstack(
             [concept_embeddings[con] for con in val_split["concept"]]
         )
-        val_labels = val_split["label"].valuse()
+        val_labels = val_split["label"].values
 
         print(f"train_con_embeddings.shape: {train_con_embeddings.shape}")
         print(f"train_labels.shape: {train_labels.shape}")
