@@ -46,7 +46,10 @@ def get_embeddings(input_list, prompt_id):
     embeddings = dict()
 
     for i, idx in enumerate(range(0, len(input_list), batch_size)):
-        print(f"Processing batch {i} of {len(input_list) // batch_size}", flush=True)
+        print(
+            f"Getting embeddings of batch {i} of {len(input_list) // batch_size}",
+            flush=True,
+        )
 
         batch = input_list[idx : idx + batch_size]
         concept_prompts = [
@@ -184,14 +187,18 @@ if __name__ == "__main__":
 
         print()
 
-        # svm, th = train_svc(
-        #     train_data,
-        #     valid_data,
-        #     train_label,
-        #     valid_label,
-        #     "linear",
-        #     cv=min(3, len(pos_train[prop])),
-        # )
+        pos_prop = property_train_data[property_train_data["label"] == 1]
+
+        svm, th = train_svc(
+            train_con_embeddings,
+            val_con_embeddings,
+            train_labels,
+            val_labels,
+            "linear",
+            cv=min(3, len(pos_prop)),
+        )
+
+        print(f"svm: {svm}", "th: {th}")
 
         # print(f"property_test_data: {len(property_test_data)}")
         # print(
