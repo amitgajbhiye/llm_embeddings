@@ -135,6 +135,9 @@ if __name__ == "__main__":
     print(f"Concepts: {len(concepts)}, {concepts}")
     print(f"Properties: {len(properties)}, {properties}")
 
+    for idx, prop in enumerate(properties):
+        print(f"Processing: Prop - {idx+1} / {len(properties)} - {prop}")
+
     # embeddings = get_embeddings(input_list=concepts, prompt_id=config["prompt_id"])
 
     # print(f"len(embeddings): {len(embeddings)}")
