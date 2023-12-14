@@ -2,6 +2,7 @@ import json
 import logging
 import numpy as np
 from scipy.optimize import brute
+from sklearn.metrics import precision_score, recall_score, f1_score
 
 from sklearn.metrics import (
     accuracy_score,
@@ -9,6 +10,32 @@ from sklearn.metrics import (
     confusion_matrix,
     f1_score,
 )
+
+
+def f1(th, y_true, y_score):
+    # th: threshold
+    # y_true: true labels
+    # y_pred: predicted labels
+    y_pred = (y_score >= th) * 1
+    return -f1_score(y_true, y_pred)
+
+
+def optimal_threshold(y_true, y_score):
+    # y_true: true labels
+    # y_pred: predicted labels
+    bounds = [(np.min(y_score), np.max(y_score))]
+    result = brute(f1, args=(y_true, y_score), ranges=bounds, full_output=True, Ns=200)
+    return result[0][0], -f1(result[0][0], y_true, y_score)
+
+
+def pre_rec_f1(y_true, y_pred):
+    # y_true: true labels
+    # y_pred: predicted labels
+    return (
+        round(precision_score(y_true, y_pred), 4),
+        round(recall_score(y_true, y_pred), 4),
+        round(f1_score(y_true, y_pred), 4),
+    )
 
 
 def read_config(config_file):
