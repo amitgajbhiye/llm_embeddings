@@ -139,6 +139,7 @@ if __name__ == "__main__":
         print(f"Processing: Prop - {idx+1} / {len(properties)} - {prop}")
 
         property_train_data = train_df[train_df["property"] == prop]
+        property_test_data = test_df[test_df["property"] == prop]
 
         print()
         print(f"property_train_data: {len(property_train_data)}")
@@ -146,6 +147,11 @@ if __name__ == "__main__":
             f"property_train_data_label_ratio: {property_train_data['label'].value_counts()}"
         )
 
-    # embeddings = get_embeddings(input_list=concepts, prompt_id=config["prompt_id"])
+        print(f"property_test_data: {len(property_test_data)}")
+        print(
+            f"property_test_data_label_ratio: {property_test_data['label'].value_counts()}"
+        )
 
-    # print(f"len(embeddings): {len(embeddings)}")
+        # embeddings = get_embeddings(input_list=concepts, prompt_id=config["prompt_id"])
+
+        # print(f"len(embeddings): {len(embeddings)}")
