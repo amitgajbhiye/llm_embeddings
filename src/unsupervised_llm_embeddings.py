@@ -1,9 +1,15 @@
 import torch
 import pandas as pd
 import os
+import sys
 import time
 import logging
 import numpy as np
+
+
+project_path = os.path.split(os.path.abspath(os.path.realpath(__file__)))[0] + "/../"
+sys.path.append(os.path.abspath(project_path))
+
 
 from argparse import ArgumentParser
 from utils import read_config
