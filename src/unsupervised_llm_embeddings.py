@@ -7,6 +7,7 @@ import logging
 from argparse import ArgumentParser
 from utils import read_config
 
+from sklearn.model_selection import train_test_split
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
 
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
@@ -142,15 +143,22 @@ if __name__ == "__main__":
         property_test_data = test_df[test_df["property"] == prop]
 
         print()
-        print(f"property_train_data: {len(property_train_data)}")
+        print(f"all_property_train_data: {len(property_train_data)}")
         print(
-            f"property_train_data_label_ratio: {property_train_data['label'].value_counts()}"
+            f"all_property_train_data_label_ratio: {property_train_data['label'].value_counts()}"
         )
 
-        print(f"property_test_data: {len(property_test_data)}")
-        print(
-            f"property_test_data_label_ratio: {property_test_data['label'].value_counts()}"
+        train_split, val_split = train_test_split(
+            train_df, test_size=0.10, stratify=train_df["label"]
         )
+
+        print(f"train_split: {train_split.shape}")
+        print(f"val_split: {val_split.shape}")
+
+        # print(f"property_test_data: {len(property_test_data)}")
+        # print(
+        #     f"property_test_data_label_ratio: {property_test_data['label'].value_counts()}"
+        # )
 
         # embeddings = get_embeddings(input_list=concepts, prompt_id=config["prompt_id"])
 
