@@ -105,7 +105,7 @@ def get_data(config):
 
     print(f"all_concepts: {all_concepts}")
 
-    return list(all_concepts), list(all_properties)
+    return list(all_concepts), list(all_properties), train_df, test_df
 
 
 if __name__ == "__main__":
@@ -130,13 +130,21 @@ if __name__ == "__main__":
         format="%(asctime)s : %(name)s : %(levelname)s - %(message)s",
     )
 
-    concepts, properties = get_data(config=config)
+    concepts, properties, train_df, test_df = get_data(config=config)
 
     print(f"Concepts: {len(concepts)}, {concepts}")
     print(f"Properties: {len(properties)}, {properties}")
 
     for idx, prop in enumerate(properties):
         print(f"Processing: Prop - {idx+1} / {len(properties)} - {prop}")
+
+        property_train_data = train_df[train_df["property"] == prop]
+
+        print()
+        print(f"property_train_data: {len(property_train_data)}")
+        print(
+            f"property_train_data_label_ratio: {property_train_data['label'].value_counts()}"
+        )
 
     # embeddings = get_embeddings(input_list=concepts, prompt_id=config["prompt_id"])
 
