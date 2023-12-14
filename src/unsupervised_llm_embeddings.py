@@ -152,19 +152,22 @@ if __name__ == "__main__":
     print(f"Properties: {len(properties)}, {properties}")
 
     for idx, prop in enumerate(properties):
-        print(f"Processing: Prop - {idx+1} / {len(properties)} - {prop}")
+        print(
+            f"Training Classifier for Property - {idx+1} / {len(properties)} - {prop}"
+        )
 
         property_train_data = train_df[train_df["property"] == prop]
         property_test_data = test_df[test_df["property"] == prop]
 
-        print()
-        print(f"all_property_train_data: {len(property_train_data)}")
+        print(f"For property: ************ {prop} ************ ")
+        print(f"property_train_data: {len(property_train_data)}")
         print(
-            f"all_property_train_data_label_ratio: {property_train_data['label'].value_counts()}"
+            f"property_train_data_label_ratio: {property_train_data['label'].value_counts()}"
         )
 
+        print(f"****** Spliting the Property Data into Train/Val ******")
         train_split, val_split = train_test_split(
-            train_df, test_size=0.10, stratify=train_df["label"]
+            property_train_data, test_size=0.10, stratify=train_df["label"]
         )
         print(f"train_split: {train_split.shape}")
         print(f"val_split: {val_split.shape}")
