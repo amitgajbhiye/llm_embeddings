@@ -3,11 +3,14 @@ import pandas as pd
 import os
 import time
 import logging
+import numpy as np
 
 from argparse import ArgumentParser
 from utils import read_config
 
 from sklearn.model_selection import train_test_split
+from svm import train_svc, test_svc
+
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
 
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
@@ -132,6 +135,9 @@ if __name__ == "__main__":
     )
 
     concepts, properties, train_df, test_df = get_data(config=config)
+    concept_embeddings = get_embeddings(
+        input_list=concepts, prompt_id=config["prompt_id"]
+    )
 
     print(f"Concepts: {len(concepts)}, {concepts}")
     print(f"Properties: {len(properties)}, {properties}")
@@ -151,15 +157,39 @@ if __name__ == "__main__":
         train_split, val_split = train_test_split(
             train_df, test_size=0.10, stratify=train_df["label"]
         )
-
         print(f"train_split: {train_split.shape}")
         print(f"val_split: {val_split.shape}")
+
+        train_con_embeddings = np.vstack(
+            [concept_embeddings[con] for con in train_split["concept"]]
+        )
+        train_labels = train_split["label"].values()
+
+        val_con_embeddings = np.vstack(
+            [concept_embeddings[con] for con in val_split["concept"]]
+        )
+        val_labels = val_split["label"].valuse()
+
+        print(f"train_con_embeddings.shape: {train_con_embeddings.shape}")
+        print(f"train_labels.shape: {train_labels.shape}")
+
+        print(f"val_con_embeddings.shape: {val_con_embeddings.shape}")
+        print(f"val_labels.shape: {val_labels.shape}")
+
+        print()
+
+        # svm, th = train_svc(
+        #     train_data,
+        #     valid_data,
+        #     train_label,
+        #     valid_label,
+        #     "linear",
+        #     cv=min(3, len(pos_train[prop])),
+        # )
 
         # print(f"property_test_data: {len(property_test_data)}")
         # print(
         #     f"property_test_data_label_ratio: {property_test_data['label'].value_counts()}"
         # )
-
-        # embeddings = get_embeddings(input_list=concepts, prompt_id=config["prompt_id"])
 
         # print(f"len(embeddings): {len(embeddings)}")
