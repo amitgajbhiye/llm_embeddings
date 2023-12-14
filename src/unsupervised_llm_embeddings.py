@@ -131,6 +131,10 @@ if __name__ == "__main__":
     )
 
     concepts, properties = get_data(config=config)
-    embeddings = get_embeddings(input_list=concepts, prompt_id=config["prompt_id"])
 
-    print(f"len(embeddings): {len(embeddings)}")
+    print(f"Concepts: {len(concepts)}, {concepts}")
+    print(f"Properties: {len(properties)}, {properties}")
+
+    # embeddings = get_embeddings(input_list=concepts, prompt_id=config["prompt_id"])
+
+    # print(f"len(embeddings): {len(embeddings)}")
