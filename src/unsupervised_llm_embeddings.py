@@ -44,6 +44,7 @@ tokenizer.pad_token = tokenizer.eos_token
 
 
 def get_llama_embeddings(input_list, prompt_id):
+    print(f"Model Name: {base_model_id_7b}")
     embeddings = dict()
 
     for i, idx in enumerate(range(0, len(input_list), batch_size)):
