@@ -151,6 +151,20 @@ def load_word2vec_skipgram(input_list):
     return embeddings
 
 
+def load_bienc_embeds():
+    print(f"Model name: CNET+ChatGPT BiENC")
+
+    import pickle
+
+    with open(
+        "llm_embeddings/pt_embeddings/for_svm_con_embeddings_mcrae25_concept_embeddings.pkl",
+        "rb",
+    ) as file:
+        con_dict = pickle.load(file)
+
+    return con_dict
+
+
 def get_data(config):
     def clean_text(text):
         return " ".join(text.replace("_", " ").split())
@@ -239,7 +253,9 @@ if __name__ == "__main__":
     #     "pt_embeddings/numberbatch-en-19.08.txt", input_list=concepts
     # )
 
-    concept_embeddings = load_word2vec_skipgram(input_list=concepts)
+    # concept_embeddings = load_word2vec_skipgram(input_list=concepts)
+
+    concept_embeddings = load_bienc_embeds()
 
     print(f"Concepts: {len(concepts)}, {concepts}")
     print(f"Properties: {len(properties)}, {properties}")
