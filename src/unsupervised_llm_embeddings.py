@@ -88,6 +88,11 @@ def get_static_embeddings(input_list):
         except KeyError:
             print("*" * 50)
             print(f"Concept {con} not found in embeding model: {model_name}")
+            print("Splitting the word and then averaging...")
+
+            embeddings[con] = np.mean(
+                np.array([embed_model[word.strip()] for word in con.split()], axis=0)
+            )
 
     return embeddings
 
