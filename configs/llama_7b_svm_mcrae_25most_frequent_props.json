@@ -1,5 +1,5 @@
 {
-    "experiment_name": "svm_mcrae_25most_frequent_props",
+    "experiment_name": "llama_7b_svm_mcrae_25most_frequent_props",
     "log_dirctory": "mcrae_embeddings",
     "data_dir": "data/mcrae/original",
     "train_file":"data/mcrae/most_frequent_properties/train25.tsv",
