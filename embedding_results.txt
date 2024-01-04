@@ -1,6 +1,6 @@
 glove f1 = 0.34655588235294116
 fasttext f1 = 0.366914705882353
 conceptnet numberbatch f1 = 0.34959117647058824
-
+word2vec skipgram f1 = 0.3459235294117647
 
 
