@@ -125,6 +125,8 @@ def load_conceptnet_embeddings(file_path, input_list):
 
 
 def load_word2vec_skipgram(input_list):
+    print(f"Model name: word2vec-google-news-300")
+
     model = api.load("word2vec-google-news-300")
     embeddings = {}
 
