@@ -43,7 +43,7 @@ tokenizer = AutoTokenizer.from_pretrained(
 tokenizer.pad_token = tokenizer.eos_token
 
 
-def get_embeddings(input_list, prompt_id):
+def get_llama_embeddings(input_list, prompt_id):
     embeddings = dict()
 
     for i, idx in enumerate(range(0, len(input_list), batch_size)):
@@ -232,9 +232,9 @@ if __name__ == "__main__":
     )
 
     concepts, properties, train_df, test_df = get_data(config=config)
-    # concept_embeddings = get_embeddings(
-    #     input_list=concepts, prompt_id=config["prompt_id"]
-    # )
+    concept_embeddings = get_llama_embeddings(
+        input_list=concepts, prompt_id=config["prompt_id"]
+    )
 
     # static_word_embedding_model_list = [
     #     "fasttext-wiki-news-subwords-300",
@@ -255,7 +255,7 @@ if __name__ == "__main__":
 
     # concept_embeddings = load_word2vec_skipgram(input_list=concepts)
 
-    concept_embeddings = load_bienc_embeds()
+    # concept_embeddings = load_bienc_embeds()
 
     print(f"Concepts: {len(concepts)}, {concepts}")
     print(f"Properties: {len(properties)}, {properties}")
