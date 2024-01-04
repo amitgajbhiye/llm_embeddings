@@ -124,6 +124,31 @@ def load_conceptnet_embeddings(file_path, input_list):
     return con_dict
 
 
+def load_word2vec_skipgram(input_list):
+    model = api.load("word2vec-google-news-300")
+    embeddings = {}
+
+    for con in input_list:
+        if con in ("axe", "armour"):
+            continue
+        try:
+            embeddings[con] = model[con]
+
+        except KeyError:
+            print("*" * 50)
+            print(f"Concept {con} not found in embeding model...")
+            print("Splitting the word and then averaging...")
+
+            embeddings[con] = np.mean(
+                np.array([model[word.strip()] for word in con.split()]), axis=0
+            )
+
+        embeddings["axe"] = model["hatchet"]
+        embeddings["armour"] = model["breastplate"]
+
+    return embeddings
+
+
 def get_data(config):
     def clean_text(text):
         return " ".join(text.replace("_", " ").split())
@@ -208,9 +233,11 @@ if __name__ == "__main__":
     #     input_list=concepts, model_name=model_name
     # )
 
-    concept_embeddings = load_conceptnet_embeddings(
-        "pt_embeddings/numberbatch-en-19.08.txt", input_list=concepts
-    )
+    # concept_embeddings = load_conceptnet_embeddings(
+    #     "pt_embeddings/numberbatch-en-19.08.txt", input_list=concepts
+    # )
+
+    concept_embeddings = load_word2vec_skipgram(input_list=concepts)
 
     print(f"Concepts: {len(concepts)}, {concepts}")
     print(f"Properties: {len(properties)}, {properties}")

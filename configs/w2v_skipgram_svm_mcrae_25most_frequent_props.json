@@ -1,0 +1,11 @@
+{
+    "experiment_name": "w2v_skipgram_svm_mcrae_25most_frequent_props",
+    "log_dirctory": "mcrae_embeddings",
+    "data_dir": "data/mcrae/original",
+    "train_file":"data/mcrae/most_frequent_properties/train25.tsv",
+    "val_file": null,
+    "test_file":"data/mcrae/most_frequent_properties/test25.tsv",
+    "save_dir": "embeddings/mcrae",
+    "prompt_id":1
+    
+}
