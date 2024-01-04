@@ -78,7 +78,7 @@ def get_embeddings(input_list, prompt_id):
     return embeddings
 
 
-def get_static_embeddings(input_list):
+def get_static_embeddings(input_list, model_name):
     embed_model = api.load(model_name)
 
     embeddings = dict()
@@ -184,108 +184,110 @@ if __name__ == "__main__":
     #     input_list=concepts, prompt_id=config["prompt_id"]
     # )
 
-    # static_word_embedding_model_list = [
-    #     "fasttext-wiki-news-subwords-300",
-    #     "glove-wiki-gigaword-300",
-    #     "word2vec-google-news-300",
-    # ]
+    static_word_embedding_model_list = [
+        "fasttext-wiki-news-subwords-300",
+        "glove-wiki-gigaword-300",
+        "word2vec-google-news-300",
+    ]
 
-    # for model_name in static_word_embedding_model_list:
-    #     print(f"model_name: {model_name}")
+    for model_name in static_word_embedding_model_list:
+        print(f"model_name: {model_name}")
 
-    #     concept_embeddings = get_static_embeddings(input_list=concepts)
-
-    concept_embeddings = load_conceptnet_embeddings(
-        "/home/amit/cardiff_work/llm_embeddings/pt_embeddings/numberbatch-en-19.08.txt"
-    )
-
-    print(f"Concepts: {len(concepts)}, {concepts}")
-    print(f"Properties: {len(properties)}, {properties}")
-    res_all_prop = []
-
-    for idx, prop in enumerate(properties):
-        print()
-        # print(f"For property: ************ {prop} ************ ")
-        print(
-            f"************ Training Classifier for Property - {idx+1} / {len(properties)} - {prop} ************"
+        concept_embeddings = get_static_embeddings(
+            input_list=concepts, model_name=model_name
         )
 
-        property_train_data = train_df[train_df["property"] == prop]
-        property_test_data = test_df[test_df["property"] == prop]
+        # concept_embeddings = load_conceptnet_embeddings(
+        #     "/home/amit/cardiff_work/llm_embeddings/pt_embeddings/numberbatch-en-19.08.txt"
+        # )
 
-        print(f"property_train_data: {len(property_train_data)}")
-        print(
-            f"property_train_data_label_ratio: {property_train_data['label'].value_counts()}"
-        )
+        print(f"Concepts: {len(concepts)}, {concepts}")
+        print(f"Properties: {len(properties)}, {properties}")
+        res_all_prop = []
 
-        print(f"Spliting the Property Data into Train/Val ... ")
-        train_split, val_split = train_test_split(
-            property_train_data,
-            test_size=0.10,
-            stratify=property_train_data["label"],
-        )
-        print(f"train_split: {train_split.shape}")
-        print(f"val_split: {val_split.shape}")
+        for idx, prop in enumerate(properties):
+            print()
+            # print(f"For property: ************ {prop} ************ ")
+            print(
+                f"************ Training Classifier for Property - {idx+1} / {len(properties)} - {prop} ************"
+            )
 
-        train_con_embeddings = np.vstack(
-            [concept_embeddings[con] for con in train_split["concept"]]
-        )
-        train_labels = train_split["label"].values
+            property_train_data = train_df[train_df["property"] == prop]
+            property_test_data = test_df[test_df["property"] == prop]
 
-        val_con_embeddings = np.vstack(
-            [concept_embeddings[con] for con in val_split["concept"]]
-        )
-        val_labels = val_split["label"].values
+            print(f"property_train_data: {len(property_train_data)}")
+            print(
+                f"property_train_data_label_ratio: {property_train_data['label'].value_counts()}"
+            )
 
-        print(f"train_con_embeddings.shape: {train_con_embeddings.shape}")
-        print(f"train_labels.shape: {train_labels.shape}")
+            print(f"Spliting the Property Data into Train/Val ... ")
+            train_split, val_split = train_test_split(
+                property_train_data,
+                test_size=0.10,
+                stratify=property_train_data["label"],
+            )
+            print(f"train_split: {train_split.shape}")
+            print(f"val_split: {val_split.shape}")
 
-        print(f"val_con_embeddings.shape: {val_con_embeddings.shape}")
-        print(f"val_labels.shape: {val_labels.shape}")
+            train_con_embeddings = np.vstack(
+                [concept_embeddings[con] for con in train_split["concept"]]
+            )
+            train_labels = train_split["label"].values
 
-        pos_prop = property_train_data[property_train_data["label"] == 1]
+            val_con_embeddings = np.vstack(
+                [concept_embeddings[con] for con in val_split["concept"]]
+            )
+            val_labels = val_split["label"].values
 
-        svm, th = train_svc(
-            train_con_embeddings,
-            val_con_embeddings,
-            train_labels,
-            val_labels,
-            "linear",
-            cv=min(3, len(pos_prop)),
-        )
+            print(f"train_con_embeddings.shape: {train_con_embeddings.shape}")
+            print(f"train_labels.shape: {train_labels.shape}")
 
-        print(f"svm: {svm}, th: {th}")
+            print(f"val_con_embeddings.shape: {val_con_embeddings.shape}")
+            print(f"val_labels.shape: {val_labels.shape}")
 
-        print(f"Testing the Model ...")
+            pos_prop = property_train_data[property_train_data["label"] == 1]
 
-        test_con_embeddings = np.vstack(
-            [concept_embeddings[con] for con in test_df["concept"]]
-        )
-        test_labels = test_df["label"].values
+            svm, th = train_svc(
+                train_con_embeddings,
+                val_con_embeddings,
+                train_labels,
+                val_labels,
+                "linear",
+                cv=min(3, len(pos_prop)),
+            )
 
-        rr = test_svc(test_con_embeddings, test_labels, svm, th)
-        print(
-            str(idx + 1)
-            + ", "
-            + prop
+            print(f"svm: {svm}, th: {th}")
+
+            print(f"Testing the Model ...")
+
+            test_con_embeddings = np.vstack(
+                [concept_embeddings[con] for con in test_df["concept"]]
+            )
+            test_labels = test_df["label"].values
+
+            rr = test_svc(test_con_embeddings, test_labels, svm, th)
+            print(
+                str(idx + 1)
+                + ", "
+                + prop
+                + ": map = "
+                + str(rr[0])
+                + ", f1 = "
+                + str(rr[-1])
+            )
+            res_all_prop.append(rr)
+
+        res_mean = np.mean(np.array(res_all_prop), axis=0)
+
+        results_str = (
+            str(args)
+            + "\nLinear svm\n"
             + ": map = "
-            + str(rr[0])
+            + str(res_mean[0])
             + ", f1 = "
-            + str(rr[-1])
+            + str(res_mean[-1])
+            + "\n\n\n"
         )
-        res_all_prop.append(rr)
 
-    res_mean = np.mean(np.array(res_all_prop), axis=0)
-
-    results_str = (
-        str(args)
-        + "\nLinear svm\n"
-        + ": map = "
-        + str(res_mean[0])
-        + ", f1 = "
-        + str(res_mean[-1])
-        + "\n\n\n"
-    )
-
-    print("Final F1: ", res_mean[-1])
-    print(f"Final result: {results_str}")
+        print("Final F1: ", res_mean[-1])
+        print(f"Final result: {results_str}")
