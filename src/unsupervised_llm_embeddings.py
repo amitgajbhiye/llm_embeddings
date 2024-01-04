@@ -157,7 +157,7 @@ def load_bienc_embeds():
     import pickle
 
     with open(
-        "llm_embeddings/pt_embeddings/for_svm_con_embeddings_mcrae25_concept_embeddings.pkl",
+        "pt_embeddings/for_svm_con_embeddings_mcrae25_concept_embeddings.pkl",
         "rb",
     ) as file:
         con_dict = pickle.load(file)
