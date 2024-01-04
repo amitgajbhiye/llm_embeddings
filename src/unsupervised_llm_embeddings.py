@@ -209,7 +209,7 @@ if __name__ == "__main__":
     # )
 
     concept_embeddings = load_conceptnet_embeddings(
-        "pt_embeddings/numberbatch-en-19.08.txt"
+        "pt_embeddings/numberbatch-en-19.08.txt", input_list=concepts
     )
 
     print(f"Concepts: {len(concepts)}, {concepts}")
