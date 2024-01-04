@@ -91,7 +91,7 @@ def get_static_embeddings(input_list):
             print("Splitting the word and then averaging...")
 
             embeddings[con] = np.mean(
-                np.array([embed_model[word.strip()] for word in con.split()], axis=0)
+                np.array([embed_model[word.strip()] for word in con.split()]), axis=0
             )
 
     return embeddings
