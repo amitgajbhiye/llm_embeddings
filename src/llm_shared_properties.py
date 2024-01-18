@@ -35,14 +35,15 @@ for prop in uniq_props:
     ].to_list()[:num_concepts]
     concepts_list = ", ".join(concepts)
 
-    all_concepts_list.append(concepts_list)
+    all_concepts_list.append((concepts_list, prop))
 
     # print(concepts_list)
 
 prompt = f"Enumerate the five most salient properties shared by the following concepts - <CONCEPT_LIST>. Generate only the numbered list of properties."
 
 prompt_list = [
-    prompt.replace("<CONCEPT_LIST>", concept_list) for concept_list in all_concepts_list
+    (prompt.replace("<CONCEPT_LIST>", concept_list), original_property)
+    for concept_list, original_property in all_concepts_list
 ]
 
 print("prompt_list")
@@ -60,13 +61,12 @@ pipeline = transformers.pipeline(
     device_map="auto",
 )
 
-
 response_list = []
 
 file_name = "llama2_13b_shared_properties_mcrae_concepts.txt"
 
 with open(file_name, "w") as out_file:
-    for prop_prompt in prompt_list:
+    for prop_prompt, original_property in prompt_list:
         # print (concept_prompt)
 
         sequences = pipeline(
@@ -82,6 +82,7 @@ with open(file_name, "w") as out_file:
             response_list.append(f"{seq['generated_text']}\n\n")
             print(f"{seq['generated_text']}")
 
+            out_file.write(f"Original Property: {original_property}\n")
             out_file.write(f'{seq["generated_text"]}\n')
 
             print("===================================")
