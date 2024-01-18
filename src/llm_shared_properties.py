@@ -39,7 +39,9 @@ for prop in uniq_props:
 
     # print(concepts_list)
 
-prompt = f"Enumerate the five most salient properties shared by the following concepts - <CONCEPT_LIST>. Generate only the numbered list of properties."
+# prompt = f"Enumerate the five most salient properties shared by the following concepts - <CONCEPT_LIST>. Generate only the numbered list of properties."
+
+prompt = f" What is a property that is shared by the <CONCEPT_LIST>?"
 
 prompt_list = [
     (prompt.replace("<CONCEPT_LIST>", concept_list), original_property)
@@ -67,6 +69,8 @@ response_list = []
 file_name = "non_chat_llama2_13b_shared_properties_mcrae_concepts.txt"
 
 with open(file_name, "w") as out_file:
+    out_file.write(f"model_name: {model}")
+
     for prop_prompt, original_property in prompt_list:
         # print (concept_prompt)
 
@@ -85,6 +89,7 @@ with open(file_name, "w") as out_file:
             print(f"{seq['generated_text']}")
 
             out_file.write(f"\n")
+
             out_file.write(f"Original Property: {original_property}\n")
             out_file.write(f'{seq["generated_text"]}\n')
 
