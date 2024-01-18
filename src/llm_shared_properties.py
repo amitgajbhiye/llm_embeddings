@@ -80,6 +80,7 @@ with open(file_name, "w") as out_file:
 
         for seq in sequences:
             response_list.append(f"{seq['generated_text']}\n\n")
+            print(f"Original Property: {original_property}\n")
             print(f"{seq['generated_text']}")
 
             out_file.write(f"Original Property: {original_property}\n")
