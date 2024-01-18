@@ -50,8 +50,9 @@ print("prompt_list")
 print(prompt_list)
 
 
-model = "meta-llama/Llama-2-13b-chat-hf"
+# model = "meta-llama/Llama-2-13b-chat-hf"
 # model = "meta-llama/Llama-2-7b-chat-hf"
+model = "meta-llama/Llama-2-13b-hf"
 
 tokenizer = AutoTokenizer.from_pretrained(model)
 pipeline = transformers.pipeline(
@@ -63,7 +64,7 @@ pipeline = transformers.pipeline(
 
 response_list = []
 
-file_name = "llama2_13b_shared_properties_mcrae_concepts.txt"
+file_name = "non_chat_llama2_13b_shared_properties_mcrae_concepts.txt"
 
 with open(file_name, "w") as out_file:
     for prop_prompt, original_property in prompt_list:
@@ -83,6 +84,7 @@ with open(file_name, "w") as out_file:
             print(f"Original Property: {original_property}\n")
             print(f"{seq['generated_text']}")
 
+            out_file.write(f"\n")
             out_file.write(f"Original Property: {original_property}\n")
             out_file.write(f'{seq["generated_text"]}\n')
 
