@@ -2,6 +2,8 @@ import torch
 import transformers
 from transformers import AutoTokenizer
 
+import gc
+
 
 import pandas as pd
 
@@ -94,3 +96,7 @@ with open(file_name, "w") as out_file:
             out_file.write(f'{seq["generated_text"]}\n')
 
             print("===================================")
+
+del model
+torch.cuda.empty_cache()
+gc.collect()
