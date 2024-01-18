@@ -43,7 +43,7 @@ for prop in uniq_props:
 
 # prompt = f"Enumerate the five most salient properties shared by the following concepts - <CONCEPT_LIST>. Generate only the numbered list of properties."
 
-prompt = f"What are the common properties of <CONCEPT_LIST>? Generate only the numbered list of properties."
+prompt = f"What are the common properties of <CONCEPT_LIST>?"
 
 prompt_list = [
     (prompt.replace("<CONCEPT_LIST>", concept_list), original_property)
