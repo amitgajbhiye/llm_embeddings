@@ -147,7 +147,9 @@ from random import randrange
 
 
 # Load dataset from the hub and get a sample
-dataset = load_dataset("databricks/databricks-dolly-15k", split="train")
+
+data_files="data/sample/databricks-dolly-15k.jsonl"
+dataset = load_dataset("json", data_files=data_files, split="train")
 sample = dataset[randrange(len(dataset))]
 
 prompt = f"""### Instruction:
