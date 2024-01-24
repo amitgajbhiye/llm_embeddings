@@ -2,7 +2,7 @@ from datasets import load_dataset
 from random import randrange
 
 # Load dataset from the hub
-data_files = "/home/amitgajbhiye/cardiff_work/llm_embeddings/data/sample/databricks-dolly-15k.jsonl"
+data_files = "data/sample/databricks-dolly-15k.jsonl"
 dataset = load_dataset("json", data_files=data_files, split="train")
 
 print(f"dataset size: {len(dataset)}")
@@ -32,8 +32,8 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 use_flash_attention = False
 
 # Hugging Face model id
-# model_id = "NousResearch/Llama-2-7b-hf"  # non-gated
-model_id = "meta-llama/Llama-2-7b-hf"  # gated
+model_id = "NousResearch/Llama-2-7b-hf"  # non-gated
+# model_id = "meta-llama/Llama-2-7b-hf" # gated
 
 
 # BitsAndBytesConfig int-4 config
@@ -113,7 +113,6 @@ trainer = SFTTrainer(
     args=args,
 )
 
-
 # train
 trainer.train()  # there will not be a progress bar since tqdm is disabled
 
@@ -121,11 +120,11 @@ trainer.train()  # there will not be a progress bar since tqdm is disabled
 trainer.save_model()
 
 
-if use_flash_attention:
-    # unpatch flash attention
-    from utils.llama_patch import unplace_flash_attn_with_attn
+# if use_flash_attention:
+#     # unpatch flash attention
+#     from utils.llama_patch import unplace_flash_attn_with_attn
 
-    unplace_flash_attn_with_attn()
+#     unplace_flash_attn_with_attn()
 
 import torch
 from peft import AutoPeftModelForCausalLM
@@ -147,10 +146,7 @@ from random import randrange
 
 
 # Load dataset from the hub and get a sample
-
-data_files="data/sample/databricks-dolly-15k.jsonl"
-dataset = load_dataset("json", data_files=data_files, split="train")
-
+dataset = load_dataset("databricks/databricks-dolly-15k", split="train")
 sample = dataset[randrange(len(dataset))]
 
 prompt = f"""### Instruction:
