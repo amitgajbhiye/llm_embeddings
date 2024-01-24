@@ -32,8 +32,8 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 use_flash_attention = False
 
 # Hugging Face model id
-model_id = "NousResearch/Llama-2-7b-hf"  # non-gated
-# model_id = "meta-llama/Llama-2-7b-hf" # gated
+# model_id = "NousResearch/Llama-2-7b-hf"  # non-gated
+model_id = "meta-llama/Llama-2-7b-hf"  # gated
 
 
 # BitsAndBytesConfig int-4 config
