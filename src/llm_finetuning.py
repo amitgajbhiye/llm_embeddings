@@ -150,6 +150,7 @@ from random import randrange
 
 data_files="data/sample/databricks-dolly-15k.jsonl"
 dataset = load_dataset("json", data_files=data_files, split="train")
+
 sample = dataset[randrange(len(dataset))]
 
 prompt = f"""### Instruction:
