@@ -1,25 +1,7 @@
-from datasets import load_dataset
-from random import randrange
 import gc
 
-# Load dataset from the hub
-# data_files = "data/sample/databricks-dolly-15k.jsonl"
-# dataset = load_dataset("json", data_files=data_files, split="train")
-
-# print(f"dataset size: {len(dataset)}")
-# print(dataset[randrange(len(dataset))])
-
-
-# def format_instruction(sample):
-#     return f"""### Instruction:
-# Use the Input below to create an instruction, which could have been used to generate the input using an LLM.
-
-# ### Input:
-# {sample['response']}
-
-# ### Response:
-# {sample['instruction']}
-# """
+import pandas as pd
+from datasets import Dataset
 
 
 def format_instruction(sample):
@@ -34,18 +16,17 @@ Use the Input below to identify the common property or characteristic shared by 
 """
 
 
-import pandas as pd
-from datasets import Dataset
-
 data_files = "data/cnet_chatgpt/prompts_file.tsv"
-df = pd.read_csv(data_files, sep="\t", header=0)
+df = pd.read_csv(data_files, sep="\t", header=0)[0:1000]
 dataset = Dataset.from_pandas(df)
 
-print("dataset: {dataset}")
+print("************")
+print(f"dataset: {dataset}")
+print("************")
 
 
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
 use_flash_attention = False
 # Hugging Face model id
@@ -78,7 +59,7 @@ tokenizer.pad_token = tokenizer.eos_token
 tokenizer.padding_side = "right"
 
 
-from peft import LoraConfig, prepare_model_for_kbit_training, get_peft_model
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 
 # LoRA config based on QLoRA paper
 peft_config = LoraConfig(
