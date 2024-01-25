@@ -40,7 +40,7 @@ with open("generated_shared_properti.txt", "w") as file_out:
         # with torch.inference_mode():
         outputs = model.generate(
             input_ids=input_ids,
-            max_new_tokens=500,
+            max_new_tokens=100,
             do_sample=True,
             top_p=0.9,
             temperature=0.9,
