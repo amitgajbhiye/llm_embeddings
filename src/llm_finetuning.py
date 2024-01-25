@@ -1,29 +1,45 @@
 from datasets import load_dataset
 from random import randrange
+import gc
 
 # Load dataset from the hub
-data_files = "data/sample/databricks-dolly-15k.jsonl"
-dataset = load_dataset("json", data_files=data_files, split="train")
+# data_files = "data/sample/databricks-dolly-15k.jsonl"
+# dataset = load_dataset("json", data_files=data_files, split="train")
 
-print(f"dataset size: {len(dataset)}")
-print(dataset[randrange(len(dataset))])
-
-
-def format_instruction(sample):
-    return f"""### Instruction:
-Use the Input below to create an instruction, which could have been used to generate the input using an LLM.
-
-### Input:
-{sample['response']}
-
-### Response:
-{sample['instruction']}
-"""
+# print(f"dataset size: {len(dataset)}")
+# print(dataset[randrange(len(dataset))])
 
 
-from random import randrange
+# def format_instruction(sample):
+#     return f"""### Instruction:
+# Use the Input below to create an instruction, which could have been used to generate the input using an LLM.
 
-print(format_instruction(dataset[randrange(len(dataset))]))
+# ### Input:
+# {sample['response']}
+
+# ### Response:
+# {sample['instruction']}
+# """
+
+
+# def format_instruction(sample):
+#     return f"""### Instruction:
+# Use the Input below to identify the common property or characteristic shared by all these items.
+
+# ### Input:
+# "<CONCEPT_LIST>"
+
+# ### Response:
+# <SHARED_Property>
+# """
+
+data_files = "data/cnet_chatgpt/prompts_file.tsv"
+dataset = load_dataset("csv", data_files=data_files, split="train[:30%]")
+print(f"len-dataset: {len(dataset)}")
+
+# from random import randrange
+
+# print(format_instruction(dataset[randrange(len(dataset))]))
 
 
 import torch
@@ -80,8 +96,8 @@ model = get_peft_model(model, peft_config)
 from transformers import TrainingArguments
 
 args = TrainingArguments(
-    output_dir="llama-7-int4-dolly",
-    num_train_epochs=3,
+    output_dir="llama2_7b_hf_common_properties",
+    num_train_epochs=2,
     per_device_train_batch_size=6 if use_flash_attention else 4,
     gradient_accumulation_steps=2,
     gradient_checkpointing=True,
@@ -109,7 +125,7 @@ trainer = SFTTrainer(
     max_seq_length=max_seq_length,
     tokenizer=tokenizer,
     packing=True,
-    formatting_func=format_instruction,
+    # formatting_func=format_instruction,
     args=args,
 )
 
@@ -120,71 +136,64 @@ trainer.train()  # there will not be a progress bar since tqdm is disabled
 trainer.save_model()
 
 
+del model
+torch.cuda.empty_cache()
+gc.collect()
+
+
+####################################################################
 # if use_flash_attention:
 #     # unpatch flash attention
 #     from utils.llama_patch import unplace_flash_attn_with_attn
 
 #     unplace_flash_attn_with_attn()
 
-import torch
-from peft import AutoPeftModelForCausalLM
-from transformers import AutoTokenizer
+# import torch
+# from peft import AutoPeftModelForCausalLM
+# from transformers import AutoTokenizer
 
-args.output_dir = "llama-7-int4-dolly"
+# args.output_dir = "llama2_7b_hf_common_properties"
 
-# load base LLM model and tokenizer
-model = AutoPeftModelForCausalLM.from_pretrained(
-    args.output_dir,
-    low_cpu_mem_usage=True,
-    torch_dtype=torch.float16,
-    load_in_4bit=True,
-)
-tokenizer = AutoTokenizer.from_pretrained(args.output_dir)
-
-from datasets import load_dataset
-from random import randrange
+# # load base LLM model and tokenizer
+# model = AutoPeftModelForCausalLM.from_pretrained(
+#     args.output_dir,
+#     low_cpu_mem_usage=True,
+#     torch_dtype=torch.float16,
+#     load_in_4bit=True,
+# )
+# tokenizer = AutoTokenizer.from_pretrained(args.output_dir)
 
 
-# Load dataset from the hub and get a sample
-dataset = load_dataset("databricks/databricks-dolly-15k", split="train")
-sample = dataset[randrange(len(dataset))]
+# import
+# for prompt in pd.read
 
-prompt = f"""### Instruction:
-Use the Input below to create an instruction, which could have been used to generate the input using an LLM.
+# input_ids = tokenizer(prompt, return_tensors="pt", truncation=True).input_ids.cuda()
+# # with torch.inference_mode():
+# outputs = model.generate(
+#     input_ids=input_ids, max_new_tokens=100, do_sample=True, top_p=0.9, temperature=0.9
+# )
 
-### Input:
-{sample['response']}
-
-### Response:
-"""
-
-input_ids = tokenizer(prompt, return_tensors="pt", truncation=True).input_ids.cuda()
-# with torch.inference_mode():
-outputs = model.generate(
-    input_ids=input_ids, max_new_tokens=100, do_sample=True, top_p=0.9, temperature=0.9
-)
-
-print(f"Prompt:\n{sample['response']}\n")
-print(
-    f"Generated instruction:\n{tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True)[0][len(prompt):]}"
-)
-print(f"Ground truth:\n{sample['instruction']}")
+# print(f"Prompt:\n{sample['response']}\n")
+# print(
+#     f"Generated instruction:\n{tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True)[0][len(prompt):]}"
+# )
+# print(f"Ground truth:\n{sample['instruction']}")
 
 
-from peft import AutoPeftModelForCausalLM
+# from peft import AutoPeftModelForCausalLM
 
-model = AutoPeftModelForCausalLM.from_pretrained(
-    args.output_dir,
-    low_cpu_mem_usage=True,
-)
+# model = AutoPeftModelForCausalLM.from_pretrained(
+#     args.output_dir,
+#     low_cpu_mem_usage=True,
+# )
 
-# Merge LoRA and base model
-merged_model = model.merge_and_unload()
+# # Merge LoRA and base model
+# merged_model = model.merge_and_unload()
 
-# Save the merged model
-merged_model.save_pretrained("merged_model", safe_serialization=True)
-tokenizer.save_pretrained("merged_model")
+# # Save the merged model
+# merged_model.save_pretrained("merged_model", safe_serialization=True)
+# tokenizer.save_pretrained("merged_model")
 
-# push merged model to the hub
-# merged_model.push_to_hub("user/repo")
-# tokenizer.push_to_hub("user/repo")
+# # push merged model to the hub
+# # merged_model.push_to_hub("user/repo")
+# # tokenizer.push_to_hub("user/repo")
