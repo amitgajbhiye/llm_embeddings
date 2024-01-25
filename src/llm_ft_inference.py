@@ -15,7 +15,7 @@ model = AutoPeftModelForCausalLM.from_pretrained(
 tokenizer = AutoTokenizer.from_pretrained(output_dir)
 
 data_files = "data/cnet_chatgpt/prompts_file.tsv"
-df = pd.read_csv(data_files, sep="\t", header=0)[1001:1021]
+df = pd.read_csv(data_files, sep="\t", header=0)[1001:1015]
 
 inf_prompt = f"""### Instruction:
 Use the Input below to identify the common property or characteristic shared by all these concepts.
