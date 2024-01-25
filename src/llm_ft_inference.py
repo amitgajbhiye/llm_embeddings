@@ -28,23 +28,32 @@ Use the Input below to identify the common property or characteristic shared by 
 
 inf_prompts = []
 
-for _, concept_list, true_shared_prop in df.values:
-    # inf_prompts.append(prompt.replace("<CONCEPT_LIST>", concept_list))
+with open("generated_shared_properti.txt", "w") as file_out:
+    for _, concept_list, true_shared_prop in df.values:
+        # inf_prompts.append(prompt.replace("<CONCEPT_LIST>", concept_list))
 
-    prompt = inf_prompt.replace("<CONCEPT_LIST>", concept_list)
+        prompt = inf_prompt.replace("<CONCEPT_LIST>", concept_list)
 
-    input_ids = tokenizer(prompt, return_tensors="pt", truncation=True).input_ids.cuda()
-    # with torch.inference_mode():
-    outputs = model.generate(
-        input_ids=input_ids,
-        max_new_tokens=100,
-        do_sample=True,
-        top_p=0.9,
-        temperature=0.9,
-    )
+        input_ids = tokenizer(
+            prompt, return_tensors="pt", truncation=True
+        ).input_ids.cuda()
+        # with torch.inference_mode():
+        outputs = model.generate(
+            input_ids=input_ids,
+            max_new_tokens=100,
+            do_sample=True,
+            top_p=0.9,
+            temperature=0.9,
+        )
 
-    # print(f"Prompt:\n{prompt}\n")
-    print(f"Ground truth Propert:\n{true_shared_prop}")
-    print(
-        f"Generated Shared Property:\n{tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True)[0][len(prompt):]}"
-    )
+        file_out.write(f"concept_list: {true_shared_prop}")
+        file_out.write(f"Ground truth Propert: {true_shared_prop}")
+        file_out.write(
+            f"Generated Shared Property:{tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True)[0][len(prompt):]} \n\n\n"
+        )
+
+        print(f"concept_list: {true_shared_prop}")
+        print(f"Ground truth Propert: {true_shared_prop}")
+        print(
+            f"Generated Shared Property:{tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True)[0][len(prompt):]} \n\n\n"
+        )
