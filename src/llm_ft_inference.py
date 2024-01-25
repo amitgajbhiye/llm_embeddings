@@ -43,8 +43,8 @@ for _, concept_list, true_shared_prop in df.values:
         temperature=0.9,
     )
 
-    print(f"Prompt:\n{prompt}\n")
+    # print(f"Prompt:\n{prompt}\n")
+    print(f"Ground truth Propert:\n{true_shared_prop}")
     print(
         f"Generated Shared Property:\n{tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True)[0][len(prompt):]}"
     )
-    print(f"Ground truth:\n{true_shared_prop}")
