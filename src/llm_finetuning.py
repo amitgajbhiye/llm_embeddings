@@ -22,33 +22,35 @@ import gc
 # """
 
 
-# def format_instruction(sample):
-#     return f"""### Instruction:
-# Use the Input below to identify the common property or characteristic shared by all these items.
+def format_instruction(sample):
+    return f"""### Instruction:
+Use the Input below to identify the common property or characteristic shared by all these concepts.
 
-# ### Input:
-# "<CONCEPT_LIST>"
+### Input:
+{sample['concept_list']}
 
-# ### Response:
-# <SHARED_Property>
-# """
+### Response:
+{sample['shared_property']}
+"""
+
+
+import pandas as pd
+from datasets import Dataset
 
 data_files = "data/cnet_chatgpt/prompts_file.tsv"
-dataset = load_dataset("csv", data_files=data_files, split="train[:30%]")
-print(f"len-dataset: {len(dataset)}")
+df = pd.read_csv(data_files, sep="\t", header=0)
+dataset = Dataset.from_pandas(df)
 
-# from random import randrange
-
-# print(format_instruction(dataset[randrange(len(dataset))]))
+print("dataset: {dataset}")
 
 
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 
 use_flash_attention = False
-
 # Hugging Face model id
 # model_id = "NousResearch/Llama-2-7b-hf"  # non-gated
+
 model_id = "meta-llama/Llama-2-7b-hf"  # gated
 
 
@@ -125,8 +127,7 @@ trainer = SFTTrainer(
     max_seq_length=max_seq_length,
     tokenizer=tokenizer,
     packing=True,
-    # formatting_func=format_instruction,
-    dataset_text_field=0,
+    formatting_func=format_instruction,
     args=args,
 )
 
