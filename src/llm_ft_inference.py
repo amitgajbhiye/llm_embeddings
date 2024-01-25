@@ -1,4 +1,5 @@
 import torch
+import pandas as pd
 from peft import AutoPeftModelForCausalLM
 from transformers import AutoTokenizer
 
@@ -13,45 +14,37 @@ model = AutoPeftModelForCausalLM.from_pretrained(
 )
 tokenizer = AutoTokenizer.from_pretrained(output_dir)
 
+data_files = "data/cnet_chatgpt/prompts_file.tsv"
+df = pd.read_csv(data_files, sep="\t", header=0)[1001:1021]
 
-prompt = f"""### Instruction:
+inf_prompt = f"""### Instruction:
 Use the Input below to identify the common property or characteristic shared by all these concepts.
 
 ### Input:
-{sample['concept_list']}
+<CONCEPT_LIST>
 
 ### Response:
-{sample['shared_property']}
 """
 
+inf_prompts = []
 
-input_ids = tokenizer(prompt, return_tensors="pt", truncation=True).input_ids.cuda()
-# with torch.inference_mode():
-outputs = model.generate(
-    input_ids=input_ids, max_new_tokens=100, do_sample=True, top_p=0.9, temperature=0.9
-)
+for _, concept_list, true_shared_prop in df.values:
+    # inf_prompts.append(prompt.replace("<CONCEPT_LIST>", concept_list))
 
-print(f"Prompt:\n{sample['response']}\n")
-print(
-    f"Generated instruction:\n{tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True)[0][len(prompt):]}"
-)
-print(f"Ground truth:\n{sample['instruction']}")
+    prompt = inf_prompt.replace("<CONCEPT_LIST>", concept_list)
 
+    input_ids = tokenizer(prompt, return_tensors="pt", truncation=True).input_ids.cuda()
+    # with torch.inference_mode():
+    outputs = model.generate(
+        input_ids=input_ids,
+        max_new_tokens=100,
+        do_sample=True,
+        top_p=0.9,
+        temperature=0.9,
+    )
 
-from peft import AutoPeftModelForCausalLM
-
-model = AutoPeftModelForCausalLM.from_pretrained(
-    args.output_dir,
-    low_cpu_mem_usage=True,
-)
-
-# Merge LoRA and base model
-merged_model = model.merge_and_unload()
-
-# Save the merged model
-merged_model.save_pretrained("merged_model", safe_serialization=True)
-tokenizer.save_pretrained("merged_model")
-
-# push merged model to the hub
-# merged_model.push_to_hub("user/repo")
-# tokenizer.push_to_hub("user/repo")
+    print(f"Prompt:\n{prompt}\n")
+    print(
+        f"Generated Shared Property:\n{tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True)[0][len(prompt):]}"
+    )
+    print(f"Ground truth:\n{true_shared_prop}")
