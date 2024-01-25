@@ -40,20 +40,20 @@ with open("generated_shared_properti.txt", "w") as file_out:
         # with torch.inference_mode():
         outputs = model.generate(
             input_ids=input_ids,
-            max_new_tokens=100,
+            max_new_tokens=500,
             do_sample=True,
             top_p=0.9,
             temperature=0.9,
         )
 
-        file_out.write(f"concept_list: {true_shared_prop}")
-        file_out.write(f"Ground truth Propert: {true_shared_prop}")
+        file_out.write(f"concept_list: {concept_list}")
+        file_out.write(f"ground_truth_property: {true_shared_prop}")
         file_out.write(
-            f"Generated Shared Property:{tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True)[0][len(prompt):]} \n\n\n"
+            f"generated_shared_property:{tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True)[0][len(prompt):]}\n\n"
         )
 
-        print(f"concept_list: {true_shared_prop}")
-        print(f"Ground truth Propert: {true_shared_prop}")
+        print(f"concept_list: {concept_list}")
+        print(f"ground_truth_property: {true_shared_prop}")
         print(
-            f"Generated Shared Property:{tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True)[0][len(prompt):]} \n\n\n"
+            f"generated_shared_property:{tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True)[0][len(prompt):]}\n\n"
         )
