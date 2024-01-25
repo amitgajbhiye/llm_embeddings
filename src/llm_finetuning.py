@@ -126,6 +126,7 @@ trainer = SFTTrainer(
     tokenizer=tokenizer,
     packing=True,
     # formatting_func=format_instruction,
+    dataset_text_field="features",
     args=args,
 )
 
