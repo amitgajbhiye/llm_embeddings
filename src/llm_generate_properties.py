@@ -40,7 +40,7 @@ pipeline = transformers.pipeline(
 
 response_list = []
 
-file_name = f"generated_property_{model}.txt"
+file_name = f'generated_property_{model.replace("/", "_").replace("-", "_")}.txt'
 
 with open(file_name, "w") as out_file:
     out_file.write(f"model_name: {model}")
