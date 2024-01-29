@@ -4,7 +4,6 @@ from transformers import AutoTokenizer
 
 import gc
 
-
 import pandas as pd
 
 import pandas as pd
@@ -43,7 +42,13 @@ for prop in uniq_props:
 
 # prompt = f"Enumerate the five most salient properties shared by the following concepts - <CONCEPT_LIST>. Generate only the numbered list of properties."
 
+
+### New Prompt
+## From now on, you are an competitive contestant in the general knowledge quiz contest and always answer all kinds of common sense questions accurately.
+## You have a broad range of general and real word knowledge. This is the final round of the quiz contest
+
 prompt = f"What are the common properties of <CONCEPT_LIST>?"
+
 
 prompt_list = [
     (prompt.replace("<CONCEPT_LIST>", concept_list), original_property)
