@@ -13,7 +13,7 @@ input_file = "data/ufet/clean_types.txt"
 with open(input_file, "r") as f:
     types = f.readlines()
 
-types = [type.strip("\n").strip() for type in types][0:20]
+types = [type.strip("\n").strip() for type in types][0:100]
 print(f"num_types: {len(types)}")
 print(f"sample_types: {random.sample(types, 5)}")
 
