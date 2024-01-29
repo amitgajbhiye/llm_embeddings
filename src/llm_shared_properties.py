@@ -45,7 +45,8 @@ for prop in uniq_props:
 
 ### New Prompt
 ## From now on, you are an competitive contestant in the general knowledge quiz contest and always answer all kinds of common sense questions accurately.
-## You have a broad range of general and real word knowledge. This is the final round of the quiz contest
+## You have a broad range of general and real word knowledge. This is the final round of the quiz contest and you have to answer the question to the best of your knowledge.
+## Your answers must be a python list. The question is - List the five most salient properties of <CONCEPT>
 
 prompt = f"What are the common properties of <CONCEPT_LIST>?"
 
