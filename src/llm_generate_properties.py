@@ -46,6 +46,7 @@ with open(file_name, "w") as out_file:
     out_file.write(f"model_name: {model}")
 
     for prop_prompt in prompt_list:
+        print(f"Concept: {prop_prompt.split()[-1]}")
         sequences = pipeline(
             prop_prompt,
             do_sample=True,
@@ -57,7 +58,6 @@ with open(file_name, "w") as out_file:
 
         for seq in sequences:
             # response_list.append(f"{seq['generated_text']}\n\n")
-
             print(f"{seq['generated_text']}")
 
             out_file.write(f'{seq["generated_text"]}\n')
