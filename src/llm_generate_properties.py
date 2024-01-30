@@ -18,7 +18,9 @@ print(f"num_types: {len(types)}")
 print(f"sample_types: {random.sample(types, 5)}")
 
 
-prompt = f"From now on, you are an competitive contestant in the general knowledge quiz contest and always answer all kinds of common sense questions accurately. You have a broad range of general and real word knowledge. This is the final round of the quiz contest and you have to answer the question to the best of your knowledge. Your answers must be a python list. The question is - What are the five most salient properties of <CONCEPT>?"
+# prompt = f"From now on, you are an competitive contestant in the general knowledge quiz contest and always answer all kinds of common sense questions accurately. You have a broad range of general and real word knowledge. This is the final round of the quiz contest and you have to answer the question to the best of your knowledge. Your answers must be a python list. The question is - What are the five most salient properties of <CONCEPT>?"
+
+prompt = f"List the five most salient properties of <CONCEPT>. Generate only the numbered list of properties."
 
 prompt_list = [prompt.replace("<CONCEPT>", type) for type in types]
 
@@ -40,7 +42,9 @@ pipeline = transformers.pipeline(
 
 response_list = []
 
-file_name = f'generated_property_{model.replace("/", "_").replace("-", "_")}.txt'
+file_name = (
+    f'outputs/generated_property_{model.replace("/", "_").replace("-", "_")}.txt'
+)
 
 with open(file_name, "w") as out_file:
     out_file.write(f"model_name: {model}")
